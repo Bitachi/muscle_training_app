@@ -1,16 +1,9 @@
-const createResponse = (statusCode, body) => {
-  return {
-    statusCode,
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(body)
-  };
-};
+const { createResponse } = require("../utils/response");
+const { logInfo, logError } = require("../utils/logger");
 
 exports.handler = async (event) => {
 
-  console.log("INFO request received", {
+  logInfo("request received", {
     path: event.path,
     method: event.httpMethod
   });
@@ -26,18 +19,15 @@ exports.handler = async (event) => {
       "ABS"
     ];
 
-    console.log("INFO parts fetched", { count: parts.length });
+    logInfo("parts fetched", { count: parts.length });
 
     return createResponse(200, {
-      parts: parts
+      parts
     });
 
   } catch (error) {
 
-    console.error("ERROR getParts failed", {
-      message: error.message,
-      stack: error.stack
-    });
+    logError("getParts failed", error);
 
     return createResponse(500, {
       message: "Internal Server Error"
