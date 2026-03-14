@@ -1,0 +1,302 @@
+openapi: 3.0.3
+info:
+  title: Muscle Training API
+  description: Serverless muscle training record API
+  version: 1.0.0
+
+servers:
+  - url: https://api.example.com
+
+paths:
+
+  /parts:
+    get:
+      summary: 部位一覧取得
+      description: 登録されているトレーニング部位一覧を取得する
+      responses:
+        "200":
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  parts:
+                    type: array
+                    items:
+                      type: string
+                example:
+                  parts:
+                    - CHEST
+                    - BACK
+                    - LEGS
+                    - SHOULDER
+
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /exercises:
+    get:
+      summary: 種目一覧取得
+      description: 指定部位のトレーニング種目一覧
+      parameters:
+        - name: part
+          in: query
+          required: true
+          schema:
+            type: string
+          example: CHEST
+
+      responses:
+        "200":
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  exercises:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Exercise"
+
+        "400":
+          description: Invalid parameter
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+        "404":
+          description: Exercises not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /training:
+    post:
+      summary: トレーニング登録
+      description: トレーニングセットを登録
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TrainingRequest"
+
+      responses:
+        "200":
+          description: 登録成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+              example:
+                status: success
+
+        "400":
+          description: Invalid request body
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    get:
+      summary: トレーニング履歴取得
+      description: ユーザのトレーニング履歴を取得
+      parameters:
+        - name: user_id
+          in: query
+          required: true
+          schema:
+            type: string
+          example: "1"
+
+      responses:
+        "200":
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TrainingList"
+
+        "400":
+          description: Invalid parameter
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+        "404":
+          description: Training not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /training/{date}:
+    get:
+      summary: 日別トレーニング取得
+      description: 指定日のトレーニング履歴
+      parameters:
+        - name: date
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "20260310"
+
+        - name: user_id
+          in: query
+          required: true
+          schema:
+            type: string
+          example: "1"
+
+      responses:
+        "200":
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TrainingByDate"
+
+        "400":
+          description: Invalid parameter
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+        "404":
+          description: Training not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+components:
+
+  schemas:
+    TrainingRequest:
+      type: object
+      required:
+        - user_id
+        - date
+        - exercise
+        - sets
+      properties:
+        user_id:
+          type: string
+        date:
+          type: string
+        exercise:
+          type: string
+        sets:
+          type: array
+          items:
+            $ref: "#/components/schemas/Set"
+
+    TrainingList:
+      type: object
+      properties:
+        records:
+          type: array
+          items:
+            type: object
+            properties:
+              date:
+                type: string
+              exercise:
+                type: string
+              sets:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Set"
+
+    TrainingByDate:
+      type: object
+      properties:
+        date:
+          type: string
+        exercises:
+          type: array
+          items:
+            type: object
+            properties:
+              exercise:
+                type: string
+              sets:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Set"
+
+
+    ErrorResponse:
+      type: object
+      properties:
+        error_code:
+          type: string
+          example: INVALID_PARAMETER
+        message:
+          type: string
+          example: user_id is required
+
+    Exercise:
+      type: object
+      properties:
+        exercise_code:
+          type: string
+        exercise_name:
+          type: string
+
+    Set:
+      type: object
+      properties:
+        set_no:
+          type: integer
+        weight:
+          type: number
+        reps:
+          type: integer
+        memo:
+          type: string
+        rm:
+          type: number
+          description: 推定1RM

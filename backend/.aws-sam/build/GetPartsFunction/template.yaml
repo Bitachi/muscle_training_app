@@ -1,0 +1,21 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Muscle Training API
+
+Globals:
+  Function:
+    Runtime: nodejs18.x
+    Timeout: 10
+
+Resources:
+
+  GetPartsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/getParts.handler
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /parts
+            Method: get

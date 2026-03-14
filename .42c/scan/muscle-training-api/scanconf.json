@@ -1,0 +1,296 @@
+{
+  "version": "2.0.0",
+  "runtimeConfiguration": {
+    "environment": "default",
+    "laxTestingModeEnabled": false,
+    "apiConnectivityCheck": true,
+    "logLevel": "error",
+    "logDestination": "stdout+platform",
+    "logMaxFileSize": 2147483648,
+    "requestHeaderNameRequestId": "x-scan-request-id",
+    "requestHeaderNameScenarioId": "x-scan-scenario-id",
+    "requestHeaderNameRequestType": "x-scan-request-type",
+    "requestFlowrate": 100,
+    "requestTimeout": 30,
+    "requestTlsInsecureSkipVerify": true,
+    "responseFollowRedirection": false,
+    "responseMaxBodySizeScan": 10485760,
+    "happyPathOnly": false,
+    "maxRequestRetryAttempts": 5,
+    "maxScanDuration": 1800,
+    "memoryLimit": 2147483648,
+    "memoryTimeSpan": 10,
+    "reportMaxRequestSizeHappyPath": 8092,
+    "reportMaxRequestSizeTest": 8092,
+    "reportIncludeRequestBody": true,
+    "reportIncludeResponseBody": true,
+    "reportMaxHttpResponseSizeHappyPath": 8092,
+    "reportMaxBodySizeHappyPath": 8092,
+    "reportMaxHttpResponseSizeTest": 8092,
+    "reportMaxBodySizeTest": 8092,
+    "reportIssuesOnly": false,
+    "reportMaxIssues": 1000,
+    "reportMaxSize": 20971520,
+    "reportGenerateCurlCommand": true,
+    "normalizeServerUrls": true
+  },
+  "customizations": {
+    "happyPaths": {
+      "retry": 1,
+      "responsePolicy": {
+        "httpStatusExpected": true,
+        "mustBeConformant": true
+      },
+      "httpStatusExpected": []
+    },
+    "tests": {
+      "responsePolicy": {
+        "httpStatusExpected": true,
+        "mustBeConformant": true
+      }
+    }
+  },
+  "environments": {
+    "default": {
+      "variables": {
+        "host": {
+          "name": "SCAN42C_HOST",
+          "from": "environment",
+          "required": false,
+          "default": "https://api.example.com"
+        }
+      }
+    }
+  },
+  "operations": {
+    "/exercises:get": {
+      "operationId": "/exercises:get",
+      "request": {
+        "operationId": "/exercises:get",
+        "request": {
+          "type": "42c",
+          "details": {
+            "operationId": "/exercises:get",
+            "method": "GET",
+            "url": "{{host}}/exercises",
+            "queries": [
+              {
+                "key": "part",
+                "value": "dsiusxshqevmsessvkpwocxlpswwzlwf"
+              }
+            ]
+          }
+        },
+        "defaultResponse": "200",
+        "responses": {
+          "200": {
+            "expectations": {
+              "httpStatus": 200
+            }
+          }
+        }
+      },
+      "scenarios": [
+        {
+          "key": "happy.path",
+          "requests": [
+            {
+              "fuzzing": true,
+              "$ref": "#/operations/~1exercises:get/request"
+            }
+          ],
+          "fuzzing": true
+        }
+      ]
+    },
+    "/parts:get": {
+      "operationId": "/parts:get",
+      "request": {
+        "operationId": "/parts:get",
+        "request": {
+          "type": "42c",
+          "details": {
+            "operationId": "/parts:get",
+            "method": "GET",
+            "url": "{{host}}/parts"
+          }
+        },
+        "defaultResponse": "200",
+        "responses": {
+          "200": {
+            "expectations": {
+              "httpStatus": 200
+            }
+          }
+        }
+      },
+      "scenarios": [
+        {
+          "key": "happy.path",
+          "requests": [
+            {
+              "fuzzing": true,
+              "$ref": "#/operations/~1parts:get/request"
+            }
+          ],
+          "fuzzing": true
+        }
+      ]
+    },
+    "/training/{date}:get": {
+      "operationId": "/training/{date}:get",
+      "request": {
+        "operationId": "/training/{date}:get",
+        "request": {
+          "type": "42c",
+          "details": {
+            "operationId": "/training/{date}:get",
+            "method": "GET",
+            "url": "{{host}}/training/{date}",
+            "queries": [
+              {
+                "key": "user_id",
+                "value": "xsqyrvrrnfyrwslfujixdxtaiiqnecdy"
+              }
+            ],
+            "paths": [
+              {
+                "key": "date",
+                "value": "pyixvyqsarylnredecvzuurjrouvctsw"
+              }
+            ]
+          }
+        },
+        "defaultResponse": "200",
+        "responses": {
+          "200": {
+            "expectations": {
+              "httpStatus": 200
+            }
+          }
+        }
+      },
+      "scenarios": [
+        {
+          "key": "happy.path",
+          "requests": [
+            {
+              "fuzzing": true,
+              "$ref": "#/operations/~1training~1{date}:get/request"
+            }
+          ],
+          "fuzzing": true
+        }
+      ]
+    },
+    "/training:get": {
+      "operationId": "/training:get",
+      "request": {
+        "operationId": "/training:get",
+        "request": {
+          "type": "42c",
+          "details": {
+            "operationId": "/training:get",
+            "method": "GET",
+            "url": "{{host}}/training",
+            "queries": [
+              {
+                "key": "user_id",
+                "value": "qlzioahiqdfxlijhwgvqtkeqtxgfdipu"
+              }
+            ]
+          }
+        },
+        "defaultResponse": "200",
+        "responses": {
+          "200": {
+            "expectations": {
+              "httpStatus": 200
+            }
+          }
+        }
+      },
+      "scenarios": [
+        {
+          "key": "happy.path",
+          "requests": [
+            {
+              "fuzzing": true,
+              "$ref": "#/operations/~1training:get/request"
+            }
+          ],
+          "fuzzing": true
+        }
+      ]
+    },
+    "/training:post": {
+      "operationId": "/training:post",
+      "request": {
+        "operationId": "/training:post",
+        "request": {
+          "type": "42c",
+          "details": {
+            "operationId": "/training:post",
+            "method": "POST",
+            "url": "{{host}}/training",
+            "headers": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "requestBody": {
+              "mode": "json",
+              "json": {
+                "date": "20260310",
+                "exercise": "BENCHPRESS",
+                "sets": [
+                  {
+                    "memo": "good condition",
+                    "reps": 10,
+                    "set_no": 1,
+                    "weight": 70
+                  },
+                  {
+                    "memo": "good condition",
+                    "reps": 10,
+                    "set_no": 1,
+                    "weight": 70
+                  },
+                  {
+                    "memo": "good condition",
+                    "reps": 10,
+                    "set_no": 1,
+                    "weight": 70
+                  }
+                ],
+                "user_id": "1"
+              }
+            }
+          }
+        },
+        "defaultResponse": "200",
+        "responses": {
+          "200": {
+            "expectations": {
+              "httpStatus": 200
+            }
+          }
+        }
+      },
+      "scenarios": [
+        {
+          "key": "happy.path",
+          "requests": [
+            {
+              "fuzzing": true,
+              "$ref": "#/operations/~1training:post/request"
+            }
+          ],
+          "fuzzing": true
+        }
+      ]
+    }
+  },
+  "authenticationDetails": []
+}
