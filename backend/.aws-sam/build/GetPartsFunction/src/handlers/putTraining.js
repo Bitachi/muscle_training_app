@@ -5,6 +5,7 @@ const { createResponse } = require("../utils/response");
 const { logInfo, logError } = require("../utils/logger");
 
 function calcRM(weight, reps) {
+  if (weight == null) return null;
   return Math.round(weight * (1 + reps / 30) * 10) / 10;
 }
 
@@ -24,12 +25,13 @@ exports.handler = async (event) => {
 
   const { user_id, weight, reps, memo } = body ?? {};
 
-  if (!user_id || !date || !exercise || !set_no || weight == null || reps == null) {
+  if (!user_id || !date || !exercise || !set_no || reps == null) {
     return createResponse(400, {
       error_code: "INVALID_PARAMETER",
-      message: "user_id, weight, reps are required"
+      message: "user_id, reps are required"
     });
   }
+  const w = weight != null && weight !== "" ? Number(weight) : null;
 
   const pk = `USER#${user_id}`;
   const sk = `DATE#${date}#EXERCISE#${exercise}#SET#${set_no}`;
@@ -58,10 +60,10 @@ exports.handler = async (event) => {
         UpdateExpression:
           "SET weight = :weight, reps = :reps, memo = :memo, rm = :rm, updated_at = :updated_at, updated_by = :updated_by",
         ExpressionAttributeValues: {
-          ":weight": Number(weight),
+          ":weight": w,
           ":reps": Number(reps),
           ":memo": memo ?? "",
-          ":rm": calcRM(Number(weight), Number(reps)),
+          ":rm": calcRM(w, Number(reps)),
           ":updated_at": now,
           ":updated_by": user_id
         }

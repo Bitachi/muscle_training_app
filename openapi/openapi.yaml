@@ -555,7 +555,6 @@ paths:
               type: object
               required:
                 - user_id
-                - weight
                 - reps
               properties:
                 user_id:

@@ -5,6 +5,7 @@ const { createResponse } = require("../utils/response");
 const { logInfo, logError } = require("../utils/logger");
 
 function calcRM(weight, reps) {
+  if (weight == null) return null;
   return Math.round(weight * (1 + reps / 30) * 10) / 10;
 }
 
@@ -37,6 +38,7 @@ exports.handler = async (event) => {
 
     const writes = sets.map((set) => {
       const { set_no, weight, reps, memo } = set;
+      const w = weight != null && weight !== "" ? Number(weight) : null;
       return dynamo.send(
         new PutCommand({
           TableName: "muscle_records",
@@ -44,10 +46,10 @@ exports.handler = async (event) => {
             PK: `USER#${user_id}`,
             SK: `DATE#${date}#EXERCISE#${exercise}#SET#${set_no}`,
             exercise,
-            weight,
+            weight: w,
             reps,
             memo: memo ?? "",
-            rm: calcRM(weight, reps),
+            rm: calcRM(w, reps),
             created_at: now,
             updated_at: now,
             created_by: user_id,
