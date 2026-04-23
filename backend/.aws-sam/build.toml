@@ -5,8 +5,8 @@ codeuri = "/Users/user/Developing/muscle_training_app/backend"
 runtime = "nodejs18.x"
 architecture = "x86_64"
 handler = "src/getParts.handler"
-manifest_hash = ""
+manifest_hash = "2ce6aa55ec2dd0e2a0fa6cfcadb73ca8"
 packagetype = "Zip"
-functions = ["GetPartsFunction"]
+functions = ["GetPartsFunction", "PostPartFunction", "PutPartFunction", "DeletePartFunction", "GetExercisesFunction", "PostExerciseFunction", "PutExerciseFunction", "DeleteExerciseFunction", "PostTrainingFunction", "GetTrainingFunction", "GetTrainingByDateFunction", "PutTrainingFunction", "DeleteTrainingFunction"]
 
 [layer_build_definitions]

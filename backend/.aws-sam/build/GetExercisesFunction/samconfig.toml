@@ -1,0 +1,18 @@
+version = 0.1
+
+[default.global.parameters]
+stack_name = "muscle-training-app"
+region = "ap-northeast-1"
+
+[default.build.parameters]
+cached = true
+parallel = true
+parameter_overrides = "IsLocal=false"
+
+[default.deploy.parameters]
+capabilities = "CAPABILITY_IAM"
+resolve_s3 = true
+confirm_changeset = true
+s3_prefix = "muscle-training-app"
+image_repositories = []
+parameter_overrides = "IsLocal=false"

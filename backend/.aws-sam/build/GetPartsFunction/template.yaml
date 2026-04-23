@@ -2,20 +2,285 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: Muscle Training API
 
+Parameters:
+  IsLocal:
+    Type: String
+    Default: "false"
+    AllowedValues:
+      - "true"
+      - "false"
+
 Globals:
   Function:
     Runtime: nodejs18.x
     Timeout: 10
+    Environment:
+      Variables:
+        IS_LOCAL: !Ref IsLocal
 
 Resources:
+
+  # ---- IAM ----
+
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: DynamoDBAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:GetItem
+                  - dynamodb:PutItem
+                  - dynamodb:UpdateItem
+                  - dynamodb:DeleteItem
+                  - dynamodb:Query
+                  - dynamodb:Scan
+                Resource:
+                  - !GetAtt PartsTable.Arn
+                  - !GetAtt ExerciseMasterTable.Arn
+                  - !GetAtt MuscleRecordsTable.Arn
+
+  # ---- API Gateway ----
+
+  MuscleTrainingApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      Cors:
+        AllowMethods: "'GET,POST,PUT,DELETE,OPTIONS'"
+        AllowHeaders: "'Content-Type'"
+        AllowOrigin: "'*'"
+
+  # ---- DynamoDB ----
+
+  PartsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: parts_master
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: PK
+          AttributeType: S
+      KeySchema:
+        - AttributeName: PK
+          KeyType: HASH
+
+  ExerciseMasterTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: exercise_master
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: PK
+          AttributeType: S
+        - AttributeName: SK
+          AttributeType: S
+      KeySchema:
+        - AttributeName: PK
+          KeyType: HASH
+        - AttributeName: SK
+          KeyType: RANGE
+
+  MuscleRecordsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: muscle_records
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: PK
+          AttributeType: S
+        - AttributeName: SK
+          AttributeType: S
+      KeySchema:
+        - AttributeName: PK
+          KeyType: HASH
+        - AttributeName: SK
+          KeyType: RANGE
+
+  # ---- Lambda Functions ----
 
   GetPartsFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/getParts.handler
+      Handler: src/handlers/getParts.handler
+      Role: !GetAtt LambdaExecutionRole.Arn
       Events:
         Api:
           Type: Api
           Properties:
+            RestApiId: !Ref MuscleTrainingApi
             Path: /parts
             Method: get
+
+  PostPartFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/postPart.handler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MuscleTrainingApi
+            Path: /parts
+            Method: post
+
+  PutPartFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/putPart.handler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MuscleTrainingApi
+            Path: /parts/{part_code}
+            Method: put
+
+  DeletePartFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/deletePart.handler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MuscleTrainingApi
+            Path: /parts/{part_code}
+            Method: delete
+
+  GetExercisesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/getExercises.handler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MuscleTrainingApi
+            Path: /exercises
+            Method: get
+
+  PostExerciseFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/postExercise.handler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MuscleTrainingApi
+            Path: /exercises
+            Method: post
+
+  PutExerciseFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/putExercise.handler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MuscleTrainingApi
+            Path: /exercises/{part_code}/{exercise_code}
+            Method: put
+
+  DeleteExerciseFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/deleteExercise.handler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MuscleTrainingApi
+            Path: /exercises/{part_code}/{exercise_code}
+            Method: delete
+
+  PostTrainingFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/postTraining.handler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MuscleTrainingApi
+            Path: /training
+            Method: post
+
+  GetTrainingFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/getTraining.handler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MuscleTrainingApi
+            Path: /training
+            Method: get
+
+  GetTrainingByDateFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/getTrainingByDate.handler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MuscleTrainingApi
+            Path: /training/{date}
+            Method: get
+
+  PutTrainingFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/putTraining.handler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MuscleTrainingApi
+            Path: /training/{date}/{exercise}/{set_no}
+            Method: put
+
+  DeleteTrainingFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/deleteTraining.handler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MuscleTrainingApi
+            Path: /training/{date}/{exercise}/{set_no}
+            Method: delete
+
+Outputs:
+  ApiEndpoint:
+    Description: "API Gateway endpoint URL"
+    Value: !Sub "https://${MuscleTrainingApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"

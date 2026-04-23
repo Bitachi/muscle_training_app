@@ -24,13 +24,158 @@ paths:
                   parts:
                     type: array
                     items:
-                      type: string
-                example:
-                  parts:
-                    - CHEST
-                    - BACK
-                    - LEGS
-                    - SHOULDER
+                      $ref: "#/components/schemas/Part"
+
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    post:
+      summary: 部位追加
+      description: 新しい部位をマスタに追加する
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - part_code
+                - part_name
+              properties:
+                part_code:
+                  type: string
+                  example: CHEST
+                part_name:
+                  type: string
+                  example: 胸
+
+      responses:
+        "200":
+          description: 追加成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+              example:
+                status: success
+
+        "400":
+          description: Invalid parameter
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+        "409":
+          description: Already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /parts/{part_code}:
+    put:
+      summary: 部位名変更
+      description: 部位の表示名を変更する
+      parameters:
+        - name: part_code
+          in: path
+          required: true
+          schema:
+            type: string
+          example: CHEST
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - part_name
+              properties:
+                part_name:
+                  type: string
+                  example: 胸（更新後）
+
+      responses:
+        "200":
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+              example:
+                status: success
+
+        "400":
+          description: Invalid parameter
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+        "404":
+          description: Part not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    delete:
+      summary: 部位削除
+      description: 指定した部位をマスタから削除する
+      parameters:
+        - name: part_code
+          in: path
+          required: true
+          schema:
+            type: string
+          example: CHEST
+
+      responses:
+        "200":
+          description: 削除成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+              example:
+                status: success
+
+        "404":
+          description: Part not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
         "500":
           description: Internal Server Error
@@ -73,6 +218,173 @@ paths:
 
         "404":
           description: Exercises not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    post:
+      summary: 種目追加
+      description: 指定部位に新しい種目をマスタに追加する
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - part_code
+                - exercise_code
+                - exercise_name
+              properties:
+                part_code:
+                  type: string
+                  example: CHEST
+                exercise_code:
+                  type: string
+                  example: BENCHPRESS
+                exercise_name:
+                  type: string
+                  example: ベンチプレス
+
+      responses:
+        "200":
+          description: 追加成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+              example:
+                status: success
+
+        "400":
+          description: Invalid parameter
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+        "409":
+          description: Already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /exercises/{part_code}/{exercise_code}:
+    put:
+      summary: 種目名変更
+      description: 種目の表示名を変更する
+      parameters:
+        - name: part_code
+          in: path
+          required: true
+          schema:
+            type: string
+          example: CHEST
+        - name: exercise_code
+          in: path
+          required: true
+          schema:
+            type: string
+          example: BENCHPRESS
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - exercise_name
+              properties:
+                exercise_name:
+                  type: string
+                  example: ベンチプレス（更新後）
+
+      responses:
+        "200":
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+              example:
+                status: success
+
+        "400":
+          description: Invalid parameter
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+        "404":
+          description: Exercise not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    delete:
+      summary: 種目削除
+      description: 指定した種目をマスタから削除する
+      parameters:
+        - name: part_code
+          in: path
+          required: true
+          schema:
+            type: string
+          example: CHEST
+        - name: exercise_code
+          in: path
+          required: true
+          schema:
+            type: string
+          example: BENCHPRESS
+
+      responses:
+        "200":
+          description: 削除成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+              example:
+                status: success
+
+        "404":
+          description: Exercise not found
           content:
             application/json:
               schema:
@@ -211,6 +523,147 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /training/{date}/{exercise}/{set_no}:
+    put:
+      summary: セット更新
+      description: 指定セットの重量・回数・メモを更新する
+      parameters:
+        - name: date
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "20260310"
+        - name: exercise
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "BENCHPRESS"
+        - name: set_no
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - user_id
+                - weight
+                - reps
+              properties:
+                user_id:
+                  type: string
+                weight:
+                  type: number
+                reps:
+                  type: integer
+                memo:
+                  type: string
+
+      responses:
+        "200":
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+              example:
+                status: success
+
+        "400":
+          description: Invalid parameter
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+        "404":
+          description: Record not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    delete:
+      summary: セット削除
+      description: 指定セットを削除する
+      parameters:
+        - name: date
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "20260310"
+        - name: exercise
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "BENCHPRESS"
+        - name: set_no
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+        - name: user_id
+          in: query
+          required: true
+          schema:
+            type: string
+          example: "1"
+
+      responses:
+        "200":
+          description: 削除成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+              example:
+                status: success
+
+        "400":
+          description: Invalid parameter
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+        "404":
+          description: Record not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
 components:
 
   schemas:
@@ -278,6 +731,16 @@ components:
           type: string
           example: user_id is required
 
+    Part:
+      type: object
+      properties:
+        part_code:
+          type: string
+          example: CHEST
+        part_name:
+          type: string
+          example: 胸
+
     Exercise:
       type: object
       properties:
@@ -288,15 +751,21 @@ components:
 
     Set:
       type: object
+      required:
+        - set_no
+        - reps
       properties:
         set_no:
           type: integer
         weight:
           type: number
+          nullable: true
+          description: 重量(kg)。自重種目の場合は省略可
         reps:
           type: integer
         memo:
           type: string
         rm:
           type: number
-          description: 推定1RM
+          nullable: true
+          description: 推定1RM。weightがnullの場合はnull

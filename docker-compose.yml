@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+
+  dynamodb:
+    image: amazon/dynamodb-local-muscle-training-app
+    container_name: dynamodb-local-muscle-training-app
+
+    ports:
+      - "8000:8000"
+
+    command: >
+      -jar DynamoDBLocal.jar
+      -sharedDb
+      -dbPath /data
+
+    volumes:
+      - ./dynamodb:/data
