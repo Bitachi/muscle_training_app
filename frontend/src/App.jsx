@@ -13,20 +13,26 @@ export default function App() {
   const [tab, setTab] = useState('form')
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <header className="bg-gray-900 text-white px-4 py-3">
-        <h1 className="text-lg font-bold">筋トレ記録</h1>
+    <div className="min-h-screen bg-slate-950 text-white">
+      <header className="bg-slate-900 px-4 py-3 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <span className="text-2xl">💪</span>
+          <h1 className="text-lg font-bold">筋トレ記録</h1>
+        </div>
+        <span className="text-red-400 text-xs font-medium flex items-center gap-1">
+          🔥 継続は力なり！
+        </span>
       </header>
 
-      <nav className="flex border-b border-gray-300 bg-white">
+      <nav className="flex gap-2 bg-slate-900 px-4 pt-1 pb-3">
         {TABS.map(({ key, label }) => (
           <button
             key={key}
             onClick={() => setTab(key)}
-            className={`flex-1 py-3 text-sm font-medium ${
+            className={`flex-1 py-2 text-sm font-medium rounded-full transition-colors ${
               tab === key
-                ? 'border-b-2 border-gray-900 text-gray-900'
-                : 'text-gray-500'
+                ? 'bg-teal-500 text-white'
+                : 'text-slate-400 hover:text-slate-200'
             }`}
           >
             {label}

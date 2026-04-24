@@ -4,8 +4,6 @@ import {
   getExercises, postExercise, putExercise, deleteExercise
 } from '../api'
 
-// ---- Parts ----
-
 function PartRow({ part, onUpdated }) {
   const [editing, setEditing] = useState(false)
   const [partName, setPartName] = useState(part.part_name)
@@ -32,21 +30,21 @@ function PartRow({ part, onUpdated }) {
 
   if (editing) {
     return (
-      <div className="py-2 space-y-2">
+      <div className="py-3 space-y-2">
         <input
           type="text"
           value={partName}
           onChange={(e) => setPartName(e.target.value)}
-          className="w-full border border-gray-300 rounded px-2 py-1 text-sm"
+          className="w-full bg-slate-700 text-white rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-teal-500 border-none"
         />
-        {error && <p className="text-xs text-red-500">{error}</p>}
+        {error && <p className="text-xs text-red-400">{error}</p>}
         <div className="flex gap-2">
           <button onClick={handleSave} disabled={saving}
-            className="text-xs bg-gray-900 text-white rounded px-3 py-1 disabled:opacity-50">
+            className="text-xs bg-teal-500 text-white rounded-lg px-3 py-1.5 disabled:opacity-50 hover:bg-teal-600 transition-colors">
             {saving ? '保存中...' : '保存'}
           </button>
           <button onClick={() => { setPartName(part.part_name); setEditing(false) }}
-            className="text-xs text-gray-500 border border-gray-300 rounded px-3 py-1">
+            className="text-xs text-slate-400 border border-slate-600 rounded-lg px-3 py-1.5 hover:border-slate-400 transition-colors">
             キャンセル
           </button>
         </div>
@@ -55,16 +53,16 @@ function PartRow({ part, onUpdated }) {
   }
 
   return (
-    <div className="flex items-center justify-between py-2">
-      <span className="text-sm text-gray-700">
+    <div className="flex items-center justify-between py-3">
+      <span className="text-sm text-slate-200">
         {part.part_name}
-        <span className="text-xs text-gray-400 ml-2">({part.part_code})</span>
+        <span className="text-xs text-slate-500 ml-2">({part.part_code})</span>
       </span>
       <div className="flex gap-3">
         <button onClick={() => setEditing(true)}
-          className="text-xs text-gray-400 hover:text-gray-700 underline">編集</button>
+          className="text-xs text-slate-400 hover:text-slate-200 transition-colors">編集</button>
         <button onClick={handleDelete}
-          className="text-xs text-red-400 hover:text-red-600 underline">削除</button>
+          className="text-xs text-red-400 hover:text-red-300 transition-colors">削除</button>
       </div>
     </div>
   )
@@ -95,26 +93,26 @@ function PartsSection() {
 
   return (
     <div className="space-y-4">
-      <div className="bg-white rounded border border-gray-200 p-4 space-y-3">
-        <p className="text-sm font-medium text-gray-700">部位を追加</p>
+      <div className="bg-slate-800 rounded-2xl p-4 space-y-3">
+        <p className="text-sm font-semibold text-slate-200">部位を追加</p>
         <div className="flex gap-2">
           <input type="text" value={partCode} onChange={(e) => setPartCode(e.target.value)}
             placeholder="コード (例: CHEST)"
-            className="flex-1 border border-gray-300 rounded px-2 py-1 text-sm" />
+            className="flex-1 bg-slate-700 text-white rounded-lg px-3 py-2 text-sm placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-teal-500 border-none" />
           <input type="text" value={partName} onChange={(e) => setPartName(e.target.value)}
             placeholder="名前 (例: 胸)"
-            className="flex-1 border border-gray-300 rounded px-2 py-1 text-sm" />
+            className="flex-1 bg-slate-700 text-white rounded-lg px-3 py-2 text-sm placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-teal-500 border-none" />
           <button onClick={handleAdd} disabled={adding}
-            className="text-sm bg-gray-900 text-white rounded px-3 py-1 disabled:opacity-50">
+            className="text-sm bg-teal-500 text-white rounded-lg px-4 py-2 disabled:opacity-50 hover:bg-teal-600 transition-colors shrink-0">
             追加
           </button>
         </div>
-        {error && <p className="text-xs text-red-500">{error}</p>}
+        {error && <p className="text-xs text-red-400">{error}</p>}
       </div>
 
-      <div className="bg-white rounded border border-gray-200 divide-y divide-gray-100">
+      <div className="bg-slate-800 rounded-2xl divide-y divide-slate-700/50">
         {parts.length === 0
-          ? <p className="text-sm text-gray-400 text-center py-4">部位がありません</p>
+          ? <p className="text-sm text-slate-500 text-center py-6">部位がありません</p>
           : parts.map((p) => (
             <div key={p.part_code} className="px-4">
               <PartRow part={p} onUpdated={load} />
@@ -125,8 +123,6 @@ function PartsSection() {
     </div>
   )
 }
-
-// ---- Exercises ----
 
 function ExerciseRow({ part_code, exercise, onUpdated }) {
   const [editing, setEditing] = useState(false)
@@ -154,18 +150,18 @@ function ExerciseRow({ part_code, exercise, onUpdated }) {
 
   if (editing) {
     return (
-      <div className="py-2 space-y-2">
+      <div className="py-3 space-y-2">
         <input type="text" value={exerciseName}
           onChange={(e) => setExerciseName(e.target.value)}
-          className="w-full border border-gray-300 rounded px-2 py-1 text-sm" />
-        {error && <p className="text-xs text-red-500">{error}</p>}
+          className="w-full bg-slate-700 text-white rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-teal-500 border-none" />
+        {error && <p className="text-xs text-red-400">{error}</p>}
         <div className="flex gap-2">
           <button onClick={handleSave} disabled={saving}
-            className="text-xs bg-gray-900 text-white rounded px-3 py-1 disabled:opacity-50">
+            className="text-xs bg-teal-500 text-white rounded-lg px-3 py-1.5 disabled:opacity-50 hover:bg-teal-600 transition-colors">
             {saving ? '保存中...' : '保存'}
           </button>
           <button onClick={() => { setExerciseName(exercise.exercise_name); setEditing(false) }}
-            className="text-xs text-gray-500 border border-gray-300 rounded px-3 py-1">
+            className="text-xs text-slate-400 border border-slate-600 rounded-lg px-3 py-1.5 hover:border-slate-400 transition-colors">
             キャンセル
           </button>
         </div>
@@ -174,16 +170,16 @@ function ExerciseRow({ part_code, exercise, onUpdated }) {
   }
 
   return (
-    <div className="flex items-center justify-between py-2">
-      <span className="text-sm text-gray-700">
+    <div className="flex items-center justify-between py-3">
+      <span className="text-sm text-slate-200">
         {exercise.exercise_name}
-        <span className="text-xs text-gray-400 ml-2">({exercise.exercise_code})</span>
+        <span className="text-xs text-slate-500 ml-2">({exercise.exercise_code})</span>
       </span>
       <div className="flex gap-3">
         <button onClick={() => setEditing(true)}
-          className="text-xs text-gray-400 hover:text-gray-700 underline">編集</button>
+          className="text-xs text-slate-400 hover:text-slate-200 transition-colors">編集</button>
         <button onClick={handleDelete}
-          className="text-xs text-red-400 hover:text-red-600 underline">削除</button>
+          className="text-xs text-red-400 hover:text-red-300 transition-colors">削除</button>
       </div>
     </div>
   )
@@ -226,40 +222,40 @@ function ExercisesSection() {
   return (
     <div className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">部位を選択</label>
+        <label className="block text-sm font-semibold text-slate-200 mb-2">部位を選択</label>
         <select value={selectedPart} onChange={(e) => handlePartChange(e.target.value)}
-          className="w-full border border-gray-300 rounded px-3 py-2 text-sm bg-white">
-          <option value="">選択してください</option>
+          className="w-full bg-slate-800 border border-slate-700 text-white rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-teal-500">
+          <option value="" className="bg-slate-800">選択してください</option>
           {parts.map((p) => (
-            <option key={p.part_code} value={p.part_code}>{p.part_name}</option>
+            <option key={p.part_code} value={p.part_code} className="bg-slate-800">{p.part_name}</option>
           ))}
         </select>
       </div>
 
       {selectedPart && (
         <>
-          <div className="bg-white rounded border border-gray-200 p-4 space-y-3">
-            <p className="text-sm font-medium text-gray-700">種目を追加</p>
+          <div className="bg-slate-800 rounded-2xl p-4 space-y-3">
+            <p className="text-sm font-semibold text-slate-200">種目を追加</p>
             <div className="flex gap-2">
               <input type="text" value={exerciseCode}
                 onChange={(e) => setExerciseCode(e.target.value)}
                 placeholder="コード (例: BENCHPRESS)"
-                className="flex-1 border border-gray-300 rounded px-2 py-1 text-sm" />
+                className="flex-1 bg-slate-700 text-white rounded-lg px-3 py-2 text-sm placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-teal-500 border-none" />
               <input type="text" value={exerciseName}
                 onChange={(e) => setExerciseName(e.target.value)}
                 placeholder="名前 (例: ベンチプレス)"
-                className="flex-1 border border-gray-300 rounded px-2 py-1 text-sm" />
+                className="flex-1 bg-slate-700 text-white rounded-lg px-3 py-2 text-sm placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-teal-500 border-none" />
               <button onClick={handleAdd} disabled={adding}
-                className="text-sm bg-gray-900 text-white rounded px-3 py-1 disabled:opacity-50">
+                className="text-sm bg-teal-500 text-white rounded-lg px-4 py-2 disabled:opacity-50 hover:bg-teal-600 transition-colors shrink-0">
                 追加
               </button>
             </div>
-            {error && <p className="text-xs text-red-500">{error}</p>}
+            {error && <p className="text-xs text-red-400">{error}</p>}
           </div>
 
-          <div className="bg-white rounded border border-gray-200 divide-y divide-gray-100">
+          <div className="bg-slate-800 rounded-2xl divide-y divide-slate-700/50">
             {exercises.length === 0
-              ? <p className="text-sm text-gray-400 text-center py-4">種目がありません</p>
+              ? <p className="text-sm text-slate-500 text-center py-6">種目がありません</p>
               : exercises.map((ex) => (
                 <div key={ex.exercise_code} className="px-4">
                   <ExerciseRow
@@ -277,23 +273,21 @@ function ExercisesSection() {
   )
 }
 
-// ---- Main ----
-
 export default function MasterManagement() {
   const [tab, setTab] = useState('parts')
 
   return (
     <div className="space-y-4">
-      <div className="flex rounded border border-gray-200 overflow-hidden bg-white">
+      <div className="flex gap-1 bg-slate-800 rounded-xl p-1">
         <button onClick={() => setTab('parts')}
-          className={`flex-1 py-2 text-sm font-medium ${
-            tab === 'parts' ? 'bg-gray-900 text-white' : 'text-gray-500'
+          className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${
+            tab === 'parts' ? 'bg-teal-500 text-white' : 'text-slate-400 hover:text-slate-200'
           }`}>
           部位
         </button>
         <button onClick={() => setTab('exercises')}
-          className={`flex-1 py-2 text-sm font-medium ${
-            tab === 'exercises' ? 'bg-gray-900 text-white' : 'text-gray-500'
+          className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${
+            tab === 'exercises' ? 'bg-teal-500 text-white' : 'text-slate-400 hover:text-slate-200'
           }`}>
           種目
         </button>
